@@ -39,10 +39,10 @@ function genMap() {
   const wallArr = [];
 
   // draw box around map
-  // wallArr.push({ x1: 0, y1: 0, x2: maxX, y2: 0 }); // top
-  // wallArr.push({ x1: maxX, y1: 0, x2: maxX, y2: maxY }); // right
-  // wallArr.push({ x1: 0, y1: maxY, x2: maxX, y2: maxY }); // bottom
-  // wallArr.push({ x1: 0, y1: 0, x2: 0, y2: maxY }); // left
+  wallArr.push({ x1: 0, y1: 0, x2: maxX, y2: 0 }); // top
+  wallArr.push({ x1: maxX, y1: 0, x2: maxX, y2: maxY }); // right
+  wallArr.push({ x1: 0, y1: maxY, x2: maxX, y2: maxY }); // bottom
+  wallArr.push({ x1: 0, y1: 0, x2: 0, y2: maxY }); // left
 
   // draw box
   wallArr.push({ x1: 10 * ux, y1: 10 * uy, x2: 20 * ux, y2: 10 * uy }); // top
