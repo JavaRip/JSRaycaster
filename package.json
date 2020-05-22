@@ -1,0 +1,23 @@
+{
+  "name": "raycasting",
+  "version": "1.0.0",
+  "description": "raycasting in javascript and canvas",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "raycasting",
+    "JS",
+    "javascript",
+    "HTML",
+    "canvas"
+  ],
+  "author": "Kane Swartz",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^7.0.0",
+    "eslint-config-portsoc": "^0.6.0"
+  }
+}
