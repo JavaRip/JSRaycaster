@@ -1,13 +1,16 @@
 // global variables
 const tdvCanv = document.querySelector('#tdv'); // top down view
 const tdv = tdvCanv.getContext('2d');
+const fpvCanv = document.querySelector('#fpv'); // first person view
+const fpv = fpvCanv.getContext('2d');
 const GS = {}; // GameState
-
+fpv.fillStyle = 'lime';
+fpv.fillRect(0, 0, 10, 10);
 // functions
 
-function clearCanvas() {
-  tdv.fillStyle = 'black';
-  tdv.fillRect(0, 0, tdvCanv.height, tdvCanv.width);
+function clearCanvas(canvEl, canv) {
+  canv.fillStyle = 'black';
+  canv.fillRect(0, 0, canvEl.height, canvEl.width);
 }
 
 function drawVectArr(arr, color, thickness) {
@@ -17,22 +20,15 @@ function drawVectArr(arr, color, thickness) {
 }
 
 function drawVect(v, color, thickness) {
+  if (v === undefined) {
+    return;
+  }
   tdv.strokeStyle = color;
   tdv.lineWidth = thickness;
   tdv.beginPath();
   tdv.moveTo(v.x1, v.y1);
   tdv.lineTo(v.x2, v.y2);
   tdv.stroke();
-}
-
-function genRandWall() {
-  const maxX = tdvCanv.width;
-  const maxY = tdvCanv.height;
-  const x1 = Math.floor(Math.random() * maxX);
-  const y1 = Math.floor(Math.random() * maxY);
-  const x2 = Math.floor(Math.random() * maxX);
-  const y2 = Math.floor(Math.random() * maxY);
-  return { x1: x1, y1: y1, x2: x2, y2: y2 };
 }
 
 function genMap() {
@@ -43,10 +39,10 @@ function genMap() {
   const wallArr = [];
 
   // draw box around map
-  wallArr.push({ x1: 0, y1: 0, x2: maxX, y2: 0 }); // top
-  wallArr.push({ x1: maxX, y1: 0, x2: maxX, y2: maxY }); // right
-  wallArr.push({ x1: 0, y1: maxY, x2: maxX, y2: maxY }); // bottom
-  wallArr.push({ x1: 0, y1: 0, x2: 0, y2: maxY }); // left
+  // wallArr.push({ x1: 0, y1: 0, x2: maxX, y2: 0 }); // top
+  // wallArr.push({ x1: maxX, y1: 0, x2: maxX, y2: maxY }); // right
+  // wallArr.push({ x1: 0, y1: maxY, x2: maxX, y2: maxY }); // bottom
+  // wallArr.push({ x1: 0, y1: 0, x2: 0, y2: maxY }); // left
 
   // draw box
   wallArr.push({ x1: 10 * ux, y1: 10 * uy, x2: 20 * ux, y2: 10 * uy }); // top
@@ -111,9 +107,7 @@ function dtctIntrscts(rays, map) {
         }
       }
     }
-    if (closestIntrsct !== undefined) {
-      intrsctArr.push(closestIntrsct);
-    }
+    intrsctArr.push(closestIntrsct);
   }
   return intrsctArr;
 }
@@ -178,19 +172,50 @@ function initGameState() {
   GS.moving.right = false;
   GS.turning.right = false;
   GS.turning.left = false;
+  GS.moveSpeed = 10;
+  GS.lookSpeed = 0.05;
   GS.playerPos = { x: tdvCanv.width / 2, y: tdvCanv.height / 2 };
-  GS.numRays = 10;
-  GS.fov = 100; // degrees
-  GS.lookDir = 180;
+  GS.numRays = 200;
+  GS.fov = 40; // degrees
+  GS.lookDir = 0;
   GS.map = genMap(GS.numWalls);
   GS.rays = genRays(GS.playerPos, GS.numRays, GS.fov, GS.lookDir);
   GS.intrscts = dtctIntrscts(GS.rays, GS.map);
 }
 
-function drawGameState() {
+function drawTdv() {
   drawVectArr(GS.map, 'white', 3);
   drawVectArr(GS.intrscts, 'lime', 2);
   drawPlayer(GS.playerPos, 'white');
+}
+
+function drawFpv() {
+  fpv.lineWidth = 1;
+  const fpvHeight = fpvCanv.height;
+  const midPoint = fpvHeight / 2;
+  const wallWidth = fpvCanv.width / GS.rays.length;
+  for (let i = 0; i < GS.intrscts.length; i += 1) {
+    if (GS.intrscts[i] === undefined) {
+      continue;
+    }
+    const wallDist = Math.hypot(GS.intrscts[i].x1 - GS.intrscts[i].x2, GS.intrscts[i].y1 - GS.intrscts[i].y2);
+    const wallHeight = ((fpvHeight - wallDist) / fpvHeight) * fpvHeight;
+    const wallPos = wallWidth * i;
+    if (wallHeight < 0) {
+      continue;
+    }
+    fpv.strokeStyle = 'rgb(' + 255 * (wallHeight / 1000) + ',' + 255 * (wallHeight / 1000) + ',' + 255 * (wallHeight / 1000) + ')';
+    fpv.fillStyle = 'rgb(' + 255 * (wallHeight / 1000) + ',' + 255 * (wallHeight / 1000) + ',' + 255 * (wallHeight / 1000) + ')';
+    fpv.beginPath();
+    fpv.moveTo(wallPos, midPoint);
+    fpv.lineTo(wallPos, midPoint + wallHeight / 2);
+    fpv.lineTo(wallPos + wallWidth, midPoint + wallHeight / 2);
+    fpv.lineTo(wallPos + wallWidth, midPoint - wallHeight / 2);
+    fpv.lineTo(wallPos, midPoint - wallHeight / 2);
+    fpv.closePath();
+    fpv.stroke();
+    fpv.fill();
+  }
 }
 
 function addELs() {
@@ -205,32 +230,32 @@ function addELs() {
 
 function init() {
   addELs();
-  clearCanvas();
   initGameState();
-  drawGameState();
   setInterval(() => {
     if (GS.moving.forward === true) {
-      GS.playerPos.y -= 5;
+      GS.playerPos.y -= GS.moveSpeed;
     }
     if (GS.moving.back === true) {
-      GS.playerPos.y += 5;
+      GS.playerPos.y += GS.moveSpeed;
     }
     if (GS.moving.left === true) {
-      GS.playerPos.x -= 5;
+      GS.playerPos.x -= GS.moveSpeed;
     }
     if (GS.moving.right === true) {
-      GS.playerPos.x += 5;
+      GS.playerPos.x += GS.moveSpeed;
     }
     if (GS.turning.right === true) {
-      GS.lookDir += 0.05;
+      GS.lookDir += GS.lookSpeed;
     }
     if (GS.turning.left === true) {
-      GS.lookDir -= 0.05;
+      GS.lookDir -= GS.lookSpeed;
     }
-    clearCanvas();
+    clearCanvas(tdvCanv, tdv);
+    clearCanvas(fpvCanv, fpv);
     reCalcRays();
-    drawGameState();
-  }, 10);
+    drawFpv();
+    drawTdv(); // draw Top Down View
+  }, 30);
 }
 
 window.addEventListener('load', init);
