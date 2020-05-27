@@ -134,24 +134,27 @@ function getIntrsct(ray, wall) {
 }
 
 function movePlayer(event, start) {
+  console.log('aahahh');
+  const input = (event.key !== undefined) ? event.key : event.target.id;
+  console.log(input);
   if (event) {
-    switch (event.keyCode) {
-      case 87: // w
+    switch (input) {
+      case 'w':
         GS.moving.forward = start;
         break;
-      case 83: // s
+      case 's':
         GS.moving.back = start;
         break;
-      case 65: // a
+      case 'a':
         GS.moving.left = start;
         break;
-      case 68: // d
+      case 'd':
         GS.moving.right = start;
         break;
-      case 37: // left arrow
+      case 'ArrowLeft':
         GS.turning.left = start;
         break;
-      case 39: // right arrow
+      case 'ArrowRight':
         GS.turning.right = start;
         break;
     }
@@ -226,6 +229,21 @@ function addELs() {
   document.addEventListener('keyup', (event) => {
     movePlayer(event, false);
   });
+
+  for (const button of document.querySelectorAll('button')) {
+    button.addEventListener('mousedown', (event) => {
+      movePlayer(event, true);
+    });
+    button.addEventListener('touchstart', (event) => {
+      movePlayer(event, true);
+    });
+    button.addEventListener('mouseup', (event) => {
+      movePlayer(event, false);
+    });
+    button.addEventListener('touchend', (event) => {
+      movePlayer(event, false);
+    });
+  }
 }
 
 function init() {

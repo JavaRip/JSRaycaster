@@ -2,9 +2,42 @@
   padding: 0;
   margin: 0;
   font-family: "Lucida Console", Courier, monospace;
+  overflow: hidden;
 }
 
 canvas {
-  height: 30em;
-  width: 30em;
+  height: 50%;
+  width: 50%;
 }
+
+#canvases {
+  font-size: 0;
+}
+
+#mobileControls {
+  user-select: none;
+  margin: 0 auto;
+  width: 100%;
+  justify-content: center;
+  min-width: 0;
+  display: grid;
+  column-gap: 1em;
+  row-gap: 1em;
+  grid-template-columns: repeat(5, 4em);
+  grid-template-rows: repeat(3, 4em);
+  grid-template-areas:
+    "lookLeft . w . lookRight"
+    "lookLeft a . d lookRight"
+    "lookLeft . s . lookRight";
+}
+
+button {
+  user-select: none;
+}
+
+#w { grid-area: w; }
+#a { grid-area: a; }
+#s { grid-area: s; }
+#d { grid-area: d; }
+#ArrowLeft { grid-area: lookLeft; }
+#ArrowRight { grid-area: lookRight; }
