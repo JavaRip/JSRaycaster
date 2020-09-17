@@ -20,9 +20,7 @@ function drawVectArr(arr, color, thickness) {
 }
 
 function drawVect(v, color, thickness) {
-  if (v === undefined) {
-    return;
-  }
+  if (v === undefined) return;
   tdv.strokeStyle = color;
   tdv.lineWidth = thickness;
   tdv.beginPath();
@@ -73,6 +71,7 @@ function genMap() {
 }
 
 function genRays(pp, numRays, fov, lookDir) {
+  console.log(lookDir);
   const rayArray = [];
   const tau = Math.PI * 2;
   const radUnit = tau / numRays * (fov / 360); // fov converted to % of degrees
@@ -134,30 +133,26 @@ function getIntrsct(ray, wall) {
 }
 
 function movePlayer(event, start) {
-  console.log('aahahh');
   const input = (event.key !== undefined) ? event.key : event.target.id;
-  console.log(input);
-  if (event) {
-    switch (input) {
-      case 'w':
-        GS.moving.forward = start;
-        break;
-      case 's':
-        GS.moving.back = start;
-        break;
-      case 'a':
-        GS.moving.left = start;
-        break;
-      case 'd':
-        GS.moving.right = start;
-        break;
-      case 'ArrowLeft':
-        GS.turning.left = start;
-        break;
-      case 'ArrowRight':
-        GS.turning.right = start;
-        break;
-    }
+  switch (input) {
+    case 'w':
+      GS.moving.forward = start;
+      break;
+    case 's':
+      GS.moving.back = start;
+      break;
+    case 'a':
+      GS.moving.left = start;
+      break;
+    case 'd':
+      GS.moving.right = start;
+      break;
+    case 'ArrowLeft':
+      GS.turning.left = start;
+      break;
+    case 'ArrowRight':
+      GS.turning.right = start;
+      break;
   }
 }
 

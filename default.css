@@ -22,8 +22,6 @@ canvas {
   justify-content: center;
   min-width: 0;
   display: grid;
-  column-gap: 1em;
-  row-gap: 1em;
   grid-template-columns: repeat(5, 4em);
   grid-template-rows: repeat(3, 4em);
   grid-template-areas:
@@ -35,7 +33,7 @@ canvas {
 button {
   user-select: none;
   margin: auto 0;
-  font-size: 2em;
+  font-size: 1.5em;
   display: flex;
   justify-content: center;
   align-items: center;
