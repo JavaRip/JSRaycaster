@@ -140,10 +140,10 @@ function movePlayer(event, start) {
     case 's':
       GS.moving.back = start;
       break;
-    case 'ArrowLeft':
+    case 'a':
       GS.turning.left = start;
       break;
-    case 'ArrowRight':
+    case 'd':
       GS.turning.right = start;
       break;
   }
