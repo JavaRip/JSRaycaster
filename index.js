@@ -71,7 +71,6 @@ function genMap() {
 }
 
 function genRays(pp, numRays, fov, lookDir) {
-  console.log(lookDir);
   const rayArray = [];
   const tau = Math.PI * 2;
   const radUnit = tau / numRays * (fov / 360); // fov converted to % of degrees
@@ -142,15 +141,9 @@ function movePlayer(event, start) {
       GS.moving.back = start;
       break;
     case 'a':
-      GS.moving.left = start;
-      break;
-    case 'd':
-      GS.moving.right = start;
-      break;
-    case 'ArrowLeft':
       GS.turning.left = start;
       break;
-    case 'ArrowRight':
+    case 'd':
       GS.turning.right = start;
       break;
   }
@@ -166,8 +159,6 @@ function initGameState() {
   GS.turning = {};
   GS.moving.forward = false;
   GS.moving.back = false;
-  GS.moving.left = false;
-  GS.moving.right = false;
   GS.turning.right = false;
   GS.turning.left = false;
   GS.moveSpeed = 10;
@@ -246,16 +237,12 @@ function init() {
   initGameState();
   setInterval(() => {
     if (GS.moving.forward === true) {
-      GS.playerPos.y -= GS.moveSpeed;
+      GS.playerPos.y = Math.round(GS.playerPos.y + Math.sin(GS.lookDir) * GS.moveSpeed);
+      GS.playerPos.x = Math.round(GS.playerPos.x + Math.cos(GS.lookDir) * GS.moveSpeed);
     }
     if (GS.moving.back === true) {
-      GS.playerPos.y += GS.moveSpeed;
-    }
-    if (GS.moving.left === true) {
-      GS.playerPos.x -= GS.moveSpeed;
-    }
-    if (GS.moving.right === true) {
-      GS.playerPos.x += GS.moveSpeed;
+      GS.playerPos.y = Math.round(GS.playerPos.y - Math.sin(GS.lookDir) * GS.moveSpeed);
+      GS.playerPos.x = Math.round(GS.playerPos.x - Math.cos(GS.lookDir) * GS.moveSpeed);
     }
     if (GS.turning.right === true) {
       GS.lookDir += GS.lookSpeed;
@@ -263,6 +250,8 @@ function init() {
     if (GS.turning.left === true) {
       GS.lookDir -= GS.lookSpeed;
     }
+
+    GS.lookDir = GS.lookDir % (Math.PI * 2);
     clearCanvas(tdvCanv, tdv);
     clearCanvas(fpvCanv, fpv);
     reCalcRays();

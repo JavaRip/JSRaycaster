@@ -25,9 +25,9 @@ canvas {
   grid-template-columns: repeat(5, 4em);
   grid-template-rows: repeat(3, 4em);
   grid-template-areas:
-    "lookLeft . w . lookRight"
-    "lookLeft a . d lookRight"
-    "lookLeft . s . lookRight";
+    ". w ."
+    "a . d"
+    ". s .";
 }
 
 button {
@@ -46,5 +46,3 @@ button {
 #a { grid-area: a; }
 #s { grid-area: s; }
 #d { grid-area: d; }
-#ArrowLeft { grid-area: lookLeft; }
-#ArrowRight { grid-area: lookRight; }
